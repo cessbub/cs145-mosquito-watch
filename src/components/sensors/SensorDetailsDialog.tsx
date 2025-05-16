@@ -110,7 +110,6 @@ const SensorDetailsDialog = ({ sensor, isOpen, onClose }: SensorDetailsDialogPro
           <DialogClose asChild>
             <Button variant="outline">Close</Button>
           </DialogClose>
-          <Button>View Full History</Button>
         </div>
       </DialogContent>
     </Dialog>
