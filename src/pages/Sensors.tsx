@@ -7,7 +7,7 @@ import FoggingDialog from "@/components/sensors/FoggingDialog";
 import SensorDetailsDialog from "@/components/sensors/SensorDetailsDialog";
 import MapView from "@/components/sensors/MapView";
 import { useToast } from "@/hooks/use-toast";
-import { useSupabaseSensors, SensorType } from "@/hooks/useSupabaseSensors";
+import { useSupabaseSensors } from "@/hooks/useSupabaseSensors";
 import { format } from "date-fns";
 import { Loading } from "@/components/ui/loading";
 
@@ -76,8 +76,8 @@ const Sensors = () => {
     });
   };
 
-  const handleSubmitFoggingLog = async (sensorId: string, date: string, notes: string) => {
-    if (!sensorId) return;
+  const handleSubmitFoggingLog = async (sensorId: string, date: string, notes: string): Promise<boolean> => {
+    if (!sensorId) return false;
     
     const success = await logFogging(sensorId, date, notes);
     if (success) {
@@ -92,6 +92,8 @@ const Sensors = () => {
       sensorId: null,
       sensorName: ""
     });
+    
+    return success; // Return the boolean value from logFogging
   };
 
   // Pass ALL sensors to the map view, not just active ones
