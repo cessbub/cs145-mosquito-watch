@@ -88,18 +88,6 @@ const SensorDetailsDialog = ({ sensor, isOpen, onClose }: SensorDetailsDialogPro
             <h3 className="font-medium mb-2">Recent Readings</h3>
             <ul className="space-y-2 text-sm">
               <li className="flex justify-between">
-                <span>Temperature</span>
-                <span className="font-medium">28°C</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Humidity</span>
-                <span className="font-medium">78%</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Water Detection</span>
-                <span className="font-medium">Positive</span>
-              </li>
-              <li className="flex justify-between">
                 <span>Mosquito Activity</span>
                 <span className="font-medium">{sensor.mosquitoLevel.charAt(0).toUpperCase() + sensor.mosquitoLevel.slice(1)}</span>
               </li>
