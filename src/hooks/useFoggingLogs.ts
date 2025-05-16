@@ -27,6 +27,11 @@ export const useFoggingLogs = () => {
       return data || [];
     } catch (err: any) {
       setError(err.message);
+      toast({
+        title: 'Error fetching fogging logs',
+        description: err.message,
+        variant: 'destructive',
+      });
       return [];
     } finally {
       setLoading(false);
@@ -35,21 +40,25 @@ export const useFoggingLogs = () => {
 
   // Log new fogging activity
   const logFogging = async (sensorId: string, date: string, notes: string) => {
+    setLoading(true);
     try {
-      const { error } = await supabase
+      console.log("Logging fogging activity:", { sensorId, date, notes });
+      
+      // Insert fogging log record
+      const { error: insertError } = await supabase
         .from('fogging_logs')
         .insert({
           sensor_id: sensorId,
           date,
-          notes,
+          notes: notes || null,
         });
 
-      if (error) {
-        throw new Error(error.message);
+      if (insertError) {
+        throw new Error(insertError.message);
       }
 
       // Update the sensor's mosquito level to low and set last_fogged
-      await supabase
+      const { error: updateError } = await supabase
         .from('sensors')
         .update({
           mosquito_level: 'low',
@@ -57,8 +66,17 @@ export const useFoggingLogs = () => {
         })
         .eq('id', sensorId);
 
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+
       // Refresh data
       await fetchFoggingLogs();
+      
+      toast({
+        title: 'Fogging activity logged successfully',
+        description: `Fogging activity recorded for ${date}`,
+      });
       
       return true;
     } catch (err: any) {
@@ -69,6 +87,8 @@ export const useFoggingLogs = () => {
         variant: 'destructive',
       });
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
