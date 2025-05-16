@@ -13,13 +13,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { CloudFog } from "lucide-react";
 
 interface FoggingDialogProps {
   sensorId: string | null;
   sensorName: string;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (sensorId: string, date: string, notes: string) => void;
+  onSubmit: (sensorId: string, date: string, notes: string) => Promise<boolean>;
 }
 
 const FoggingDialog = ({
@@ -37,7 +38,14 @@ const FoggingDialog = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!sensorId) return;
+    if (!sensorId) {
+      toast({
+        title: "Error",
+        description: "Sensor ID is missing",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (!date) {
       toast({
@@ -50,22 +58,24 @@ const FoggingDialog = ({
     setIsSubmitting(true);
     
     try {
-      await onSubmit(sensorId, date, notes);
-      setNotes("");
+      const success = await onSubmit(sensorId, date, notes);
       
-      toast({
-        title: "Fogging activity logged successfully",
-        description: `Recorded fogging for ${sensorName} on ${new Date(date).toLocaleDateString()}`,
-      });
-    } catch (error) {
+      if (success) {
+        setNotes("");
+        onClose();
+        toast({
+          title: "Fogging activity logged successfully",
+          description: `Recorded fogging for ${sensorName} on ${new Date(date).toLocaleDateString()}`,
+        });
+      }
+    } catch (error: any) {
       toast({
         title: "Error logging fogging activity",
-        description: "An error occurred while logging the fogging activity.",
+        description: error.message || "An error occurred while logging the fogging activity.",
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
-      onClose();
     }
   };
 
@@ -74,7 +84,10 @@ const FoggingDialog = ({
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Log Fogging Activity</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <CloudFog className="h-5 w-5" />
+              Log Fogging Activity
+            </DialogTitle>
             <DialogDescription>
               Record when this area was treated for mosquito control.
             </DialogDescription>
@@ -91,6 +104,7 @@ const FoggingDialog = ({
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                required
               />
             </div>
             <div className="grid gap-2">
@@ -104,6 +118,9 @@ const FoggingDialog = ({
             </div>
           </div>
           <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
+              Cancel
+            </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Saving..." : "Save Record"}
             </Button>
