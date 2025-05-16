@@ -1,0 +1,34 @@
+
+# netlify.toml - Configuration file for Netlify deployments
+
+[build]
+  # Directory to publish (the "public" directory is common for static sites)
+  publish = "dist"
+  
+  # Default build command
+  command = "npm run build"
+
+# The following redirect rule ensures that all routes are handled by the index.html file
+# This is required for single-page applications (SPAs) using client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Set custom headers
+[[headers]]
+  # Define headers for all files
+  for = "/*"
+    [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer-when-downgrade"
+    
+# Configure environment variables if needed
+# [context.production.environment]
+#  VITE_API_KEY = "production-api-key"
+
+# [context.deploy-preview.environment]
+#  VITE_API_KEY = "staging-api-key"
+
