@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Sensors from "./pages/Sensors";
+import UserSessions from "./pages/UserSessions";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -34,6 +35,13 @@ const App = () => (
               <ProtectedRoute>
                 <SidebarLayout>
                   <Sensors />
+                </SidebarLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/sessions" element={
+              <ProtectedRoute>
+                <SidebarLayout>
+                  <UserSessions />
                 </SidebarLayout>
               </ProtectedRoute>
             } />
