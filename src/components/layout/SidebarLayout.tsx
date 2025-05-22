@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bug, LayoutDashboard, Map, Menu, X } from "lucide-react";
+import { Bug, LayoutDashboard, Map, Menu, X, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 type SidebarItemProps = {
   to: string;
@@ -31,6 +32,7 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
   const pathname = location.pathname;
+  const { signOut, user } = useAuth();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -56,7 +58,7 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Sidebar header - removed the text for the logo */}
+          {/* Sidebar header */}
           <div className="flex items-center justify-center px-4 py-6">
             <Bug className="h-8 w-8 text-mosquito-300" />
           </div>
@@ -77,9 +79,23 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
             />
           </nav>
 
-          {/* Sidebar footer - removed the logout button */}
+          {/* Sidebar footer with logout button */}
           <div className="p-4 border-t border-gray-200">
-            {/* Logout button removed */}
+            {user && (
+              <div className="space-y-4">
+                <div className="text-sm text-gray-500 truncate">
+                  {user.email}
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={signOut}
+                  className="w-full flex items-center justify-center"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </aside>
