@@ -83,9 +83,6 @@ const Auth = () => {
                 <Button type="submit" className="w-full">
                   Login
                 </Button>
-                <p className="text-xs text-center text-muted-foreground">
-                  Default admin: admin@gmail.com / admin
-                </p>
               </form>
             </TabsContent>
 
