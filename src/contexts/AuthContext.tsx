@@ -42,13 +42,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
+  // Create a function to record session start
+  const recordSessionStart = async (userId: string, email: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_sessions')
+        .insert({
+          user_id: userId,
+          email: email,
+          is_active: true
+        });
+        
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Error recording session start:', error.message);
+    }
+  };
+
+  // Create a function to record session end
+  const recordSessionEnd = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_sessions')
+        .update({ 
+          logout_time: new Date().toISOString(),
+          is_active: false 
+        })
+        .eq('user_id', userId)
+        .eq('is_active', true);
+        
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Error recording session end:', error.message);
+    }
+  };
+
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
         throw error;
+      }
+
+      // Record session start after successful login
+      if (data.user) {
+        await recordSessionStart(data.user.id, email);
       }
 
       toast({
@@ -95,7 +135,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       setLoading(true);
+      
+      // Record session end before signing out
+      if (user) {
+        await recordSessionEnd(user.id);
+      }
+      
       await supabase.auth.signOut();
+      
       toast({
         title: "Logged out",
         description: "You have been logged out successfully",
