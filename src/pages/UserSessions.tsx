@@ -106,14 +106,13 @@ const UserSessions = () => {
                     <TableHead>Email</TableHead>
                     <TableHead>Login Time</TableHead>
                     <TableHead>Logout Time</TableHead>
-                    <TableHead>Duration</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sessions.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={4} className="text-center py-8 text-gray-500">
                         No sessions found
                       </TableCell>
                     </TableRow>
