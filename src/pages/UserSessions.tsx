@@ -123,7 +123,6 @@ const UserSessions = () => {
                         <TableCell>{session.email}</TableCell>
                         <TableCell>{session.login_time_formatted}</TableCell>
                         <TableCell>{session.logout_time_formatted}</TableCell>
-                        <TableCell>{session.duration}</TableCell>
                         <TableCell>{renderStatus(session)}</TableCell>
                       </TableRow>
                     ))
