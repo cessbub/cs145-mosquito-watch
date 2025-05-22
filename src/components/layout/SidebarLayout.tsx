@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bug, LayoutDashboard, Map, Menu, X, LogOut } from "lucide-react";
+import { Bug, LayoutDashboard, Map, Menu, X, LogOut, Clock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 type SidebarItemProps = {
@@ -76,6 +76,12 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
               label="Sensors"
               icon={<Map size={20} />}
               isActive={pathname === "/sensors"}
+            />
+            <SidebarItem
+              to="/sessions"
+              label="User Sessions"
+              icon={<Clock size={20} />}
+              isActive={pathname === "/sessions"}
             />
           </nav>
 
